@@ -3,11 +3,11 @@ package com.challenge.infrastructure.services;
 import com.challenge.presentation.dtos.VoterStatusResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "voterStatusClient", url = "https://user-info.herokuapp.com/users/")
+@FeignClient(name = "voterStatusClient", url = "https://user-info.herokuapp.com")
 public interface VoterStatusClient {
 
-    @GetMapping("/status")
-    VoterStatusResponseDto getVoterStatus(@RequestParam("id") String voterId);
+    @GetMapping("/users/{cpf}")
+    VoterStatusResponseDto getVoterStatus(@PathVariable("cpf") String voterId);
 }
