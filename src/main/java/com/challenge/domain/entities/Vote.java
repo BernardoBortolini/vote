@@ -17,7 +17,7 @@ public class Vote {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE) // utilizando sequence para poder salvar em batch
     private Long id;
     private Long topicId;
     private Long associateId;

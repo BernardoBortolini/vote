@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/voting")
@@ -34,7 +36,7 @@ public class VotingController {
     }
 
     @PostMapping("/vote")
-    public ResponseEntity<Void> vote(@RequestBody VoteRequest voteRequest) {
+    public ResponseEntity<Void> vote(@RequestBody List<VoteRequest> voteRequest) {
         votingService.vote(voteRequest);
         return ResponseEntity.ok().build();
     }

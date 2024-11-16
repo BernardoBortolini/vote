@@ -11,9 +11,8 @@ import com.challenge.presentation.dtos.VoteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -51,22 +50,6 @@ public class VotingService {
         log.info("Session opened for topic ID: {} with end time: {}", topicId, topic.getSessionEnd());
     }
 
-    public Vote vote(VoteRequest voteRequest) {
-        log.info("Registering vote for topic ID: {}, associate ID: {}", voteRequest.getTopicId(), voteRequest.getAssociateId());
-        if (voteRepository.existsByTopicIdAndAssociateId(voteRequest.getTopicId(), voteRequest.getAssociateId())) {
-            log.warn("Associate with ID: {} has already voted on topic ID: {}", voteRequest.getAssociateId(), voteRequest.getTopicId());
-            throw new IllegalArgumentException("Associate has already voted");
-        }
-
-        Vote vote = new Vote();
-        vote.setTopicId(voteRequest.getTopicId());
-        vote.setAssociateId(voteRequest.getAssociateId());
-        vote.setVote(VoteTypeEnum.valueOf(voteRequest.getVote()));
-        Vote savedVote = voteRepository.save(vote);
-        log.info("Vote registered with ID: {}", savedVote.getId());
-        return savedVote;
-    }
-
     public void closeSession(Long topicId) {
         Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new IllegalArgumentException("Topic not found"));
         topic.setStatus(TopicStatusEnum.CLOSED);
@@ -82,5 +65,33 @@ public class VotingService {
         result.setNoVotes((int) noVotes);
 
         kafkaTemplate.send("voting-result", result);
+    }
+
+    public List<Vote> vote(List<VoteRequest> voteRequests) {
+        log.info("Registering votes for {} requests", voteRequests.size());
+        List<Vote> votesToSave = voteRequests.stream()
+                .filter(voteRequest -> {
+                    boolean exists = voteRepository.existsByTopicIdAndAssociateId(
+                            voteRequest.getTopicId(),
+                            voteRequest.getAssociateId()
+                    );
+                    if (exists) {
+                        log.warn("Associate with ID: {} has already voted on topic ID: {}",
+                                voteRequest.getAssociateId(), voteRequest.getTopicId());
+                    }
+                    return !exists;
+                })
+                .map(voteRequest -> {
+                    Vote vote = new Vote();
+                    vote.setTopicId(voteRequest.getTopicId());
+                    vote.setAssociateId(voteRequest.getAssociateId());
+                    vote.setVote(VoteTypeEnum.valueOf(voteRequest.getVote()));
+                    return vote;
+                })
+                .toList();
+
+        List<Vote> savedVotes = voteRepository.saveAll(votesToSave);
+        log.info("Successfully registered {} votes", savedVotes.size());
+        return savedVotes;
     }
 }

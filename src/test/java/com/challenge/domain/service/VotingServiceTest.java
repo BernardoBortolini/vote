@@ -74,22 +74,33 @@ class VotingServiceTest {
     }
 
     @Test
-    void vote_mustRegisterNewVoteWhenDoesNotExistDuplicate() {
-        VoteRequest voteRequest = new VoteRequest(1L, 1L, "YES");
-        Topic topic = new Topic();
-        topic.setId(1L);
+    void vote_mustRegisterNewVotesWhenNoDuplicatesExist() {
+        List<VoteRequest> voteRequests = List.of(
+                new VoteRequest(1L, 1L, "YES"),
+                new VoteRequest(2L, 2L, "NO")
+        );
 
-        when(voteRepository.existsByTopicIdAndAssociateId(1L, 1L)).thenReturn(false);
-        when(voteRepository.save(any(Vote.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(voteRepository.existsByTopicIdAndAssociateId(anyLong(), anyLong())).thenReturn(false);
+        when(voteRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Vote vote = votingService.vote(voteRequest);
+        List<Vote> votes = votingService.vote(voteRequests);
 
-        assertNotNull(vote);
-        assertEquals(1L, vote.getTopicId());
-        assertEquals(1L, vote.getAssociateId());
-        assertEquals(VoteTypeEnum.YES, vote.getVote());
-        verify(voteRepository, times(1)).save(any(Vote.class));
+        assertNotNull(votes);
+        assertEquals(2, votes.size());
+
+        Vote firstVote = votes.get(0);
+        assertEquals(1L, firstVote.getTopicId());
+        assertEquals(1L, firstVote.getAssociateId());
+        assertEquals(VoteTypeEnum.YES, firstVote.getVote());
+
+        Vote secondVote = votes.get(1);
+        assertEquals(2L, secondVote.getTopicId());
+        assertEquals(2L, secondVote.getAssociateId());
+        assertEquals(VoteTypeEnum.NO, secondVote.getVote());
+
+        verify(voteRepository, times(1)).saveAll(anyList());
     }
+
 
     @Test
     void closeSession_SendResultToKafka() {

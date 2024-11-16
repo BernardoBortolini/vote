@@ -34,7 +34,7 @@ class VotingControllerTest {
     }
 
     @Test
-    void criarTopic_deveRetornarStatusOk() throws Exception {
+    void createTopic_mustReturnStatusOk() throws Exception {
         Topic Topic = new Topic();
         Topic.setDescription("New Topic");
 
@@ -49,7 +49,7 @@ class VotingControllerTest {
     }
 
     @Test
-    void abrirSessao_deveRetornarStatusOk() throws Exception {
+    void openSessao_mustReturnStatusOk() throws Exception {
         mockMvc.perform(post("/api/v1/voting/Topic/1/open")
                         .param("duracaoEmMinutos", "10"))
                 .andExpect(status().isOk());
@@ -58,19 +58,21 @@ class VotingControllerTest {
     }
 
     @Test
-    void votar_deveRetornarStatusOk() throws Exception {
-        VoteRequest votoRequest = new VoteRequest(1L, 1L, "YES");
+    void vote_mustReturnStatusOk() throws Exception {
+        String content = "[{\"topicId\": 1, \"associateId\": 1, \"vote\": \"YES\"},"
+                + " {\"topicId\": 2, \"associateId\": 2, \"vote\": \"NO\"}]";
 
         mockMvc.perform(post("/api/v1/voting/vote")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"TopicId\": 1, \"associadoId\": 1, \"voto\": \"SIM\"}"))
+                        .content(content))
                 .andExpect(status().isOk());
 
-        verify(votingService, times(1)).vote(any(VoteRequest.class));
+        verify(votingService, times(1)).vote(anyList());
     }
 
+
     @Test
-    void encerrarSessao_deveRetornarStatusOk() throws Exception {
+    void closeSessao_mustReturnStatusOk() throws Exception {
         mockMvc.perform(post("/api/v1/voting/topic/1/close"))
                 .andExpect(status().isOk());
 
