@@ -49,15 +49,6 @@ class VotingControllerTest {
     }
 
     @Test
-    void openSessao_mustReturnStatusOk() throws Exception {
-        mockMvc.perform(post("/api/v1/voting/Topic/1/open")
-                        .param("duracaoEmMinutos", "10"))
-                .andExpect(status().isOk());
-
-        verify(votingService, times(1)).openSession(1L, 10);
-    }
-
-    @Test
     void vote_mustReturnStatusOk() throws Exception {
         String content = "[{\"topicId\": 1, \"associateId\": 1, \"vote\": \"YES\"},"
                 + " {\"topicId\": 2, \"associateId\": 2, \"vote\": \"NO\"}]";

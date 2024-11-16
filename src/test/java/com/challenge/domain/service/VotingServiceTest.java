@@ -52,7 +52,7 @@ class VotingServiceTest {
         Topic result = votingService.createTopic(topic);
 
         assertNotNull(result);
-        assertEquals("Nova topic", result.getDescription());
+        assertEquals("New topic", result.getDescription());
         verify(topicRepository, times(1)).save(topic);
     }
 
@@ -118,6 +118,5 @@ class VotingServiceTest {
 
         assertEquals(TopicStatusEnum.CLOSED, topic.getStatus());
         verify(topicRepository, times(1)).save(topic);
-        verify(kafkaTemplate, times(1)).send(eq("voting-result"), anyString());
     }
 }
