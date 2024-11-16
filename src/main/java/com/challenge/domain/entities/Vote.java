@@ -1,5 +1,6 @@
 package com.challenge.domain.entities;
 
+import com.challenge.domain.constants.VoteTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +15,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Vote {
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private Agenda agenda;
-    private String associateId;
-    private Boolean voted;
+    private Long topicId;
+    private Long associateId;
+
+    @Enumerated(EnumType.STRING)
+    private VoteTypeEnum vote;
+
 }
+

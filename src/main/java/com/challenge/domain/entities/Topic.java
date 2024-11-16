@@ -1,5 +1,6 @@
 package com.challenge.domain.entities;
 
+import com.challenge.domain.constants.TopicStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,16 +10,21 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "agenda")
+@Table(name = "topic")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Agenda {
+public class Topic {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
     private String description;
-    private LocalDateTime createDate = LocalDateTime.now();
+
+    @Enumerated(EnumType.STRING)
+    private TopicStatusEnum status;
+
+    private LocalDateTime sessionStart;
+    private LocalDateTime sessionEnd;
+
 }
