@@ -9,6 +9,7 @@
 - **Banco de Dados**
     - PostgreSQL 
 - **Swagger** para documentação da API
+- **Apache Kafka** para comunicação assíncrona
 - **Maven** como gerenciador de dependências
 - **Docker** para executar o projeto em contêineres
 
@@ -20,7 +21,8 @@
 Certifique-se de que os seguintes itens estejam instalados e configurados no seu ambiente:
 1. **Java 17** ou superior.
 2. **Maven** 
-3. **Banco de Dados PostgreSQL** configurado.
+3. **Banco de Dados PostgreSQL**
+4. **Apache Kafka** 
 4. **Docker** 
 
 No diretório raiz do projeto, execute o seguinte comando para rodar a aplicação:
