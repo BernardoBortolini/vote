@@ -29,7 +29,8 @@ No diretório raiz do projeto, execute o seguinte comando para rodar a aplicaç�
 ```shell
 mvn spring-boot:run
 ```
-A aplicação estará disponível em: http://localhost:8080
+A aplicação estará disponível em: http://localhost:8081
+A documentação da API pode ser acessada em: http://localhost:8081/swagger-ui/index.html
 
 ### 2. Clonar o Repositório
 Faça o clone do repositório para sua máquina local:
